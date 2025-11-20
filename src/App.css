@@ -1,6 +1,6 @@
 .page {
   color: #1f2937;
-  background: #f7f8fb;
+  background: #e8e8e8;
 }
 
 .header {
@@ -10,9 +10,9 @@
   align-items: center;
   justify-content: space-between;
   padding: 14px 24px;
-  background: rgba(255, 255, 255, 0.8);
+  background: #d5d5d5;
   backdrop-filter: blur(8px);
-  border-bottom: 1px solid #eef1f6;
+  border-bottom: 1px solid #c5c5c5;
   z-index: 10;
 }
 
@@ -100,9 +100,13 @@
 .cta-link {
   padding: 8px 14px;
   border-radius: 10px;
-  background: #4f46e5;
+  background: #1e6b5f;
   color: #fff;
   text-decoration: none;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .home-hero {
@@ -147,6 +151,12 @@
   justify-content: flex-end;
 }
 
+.hero-actions .btn.primary {
+  background: #1e6b5f;
+  border-color: #1e6b5f;
+  color: #fff;
+}
+
 .hero-stats {
   display: flex;
   gap: 24px;
@@ -171,6 +181,80 @@
   margin: 0 auto;
 }
 
+/* Убираем верхний и нижний padding у всех секций */
+.page>.section {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* Добавляем padding только к контенту внутри обычных секций */
+.page>.section:not(.course-process-wrapper):not(.cta)>*:first-child {
+  padding-top: 56px;
+}
+
+/* Убираем padding-top у секции legal, когда она идет после contacts */
+.page>.section.contacts+.section.legal>*:first-child {
+  padding-top: 12px;
+}
+
+.page>.section:not(.course-process-wrapper):not(.cta)>*:last-child {
+  padding-bottom: 56px;
+}
+
+/* Для секции cta добавляем padding к самой секции */
+.page>.section.cta {
+  padding-top: 0;
+  padding-bottom: 56px;
+}
+
+/* Для course-process-wrapper добавляем padding к самому контейнеру */
+.page>.course-process-wrapper {
+  padding-top: 56px;
+  padding-bottom: 56px;
+}
+
+/* Единый отступ между всеми блоками - используем margin-top */
+.page>.section+.section,
+.page>.section+.course-hero,
+.page>.section+.course-process-wrapper,
+.page>.course-hero+.section,
+.page>.course-hero+.course-hero,
+.page>.course-hero+.course-process-wrapper,
+.page>.course-process-wrapper+.section,
+.page>.course-process-wrapper+.course-hero,
+.page>.course-process-wrapper+.course-process-wrapper {
+  margin-top: 56px;
+}
+
+/* Уменьшенный отступ между контактами и договором оферты */
+.page>.section.contacts+.section.legal {
+  margin-top: 12px !important;
+}
+
+/* Уменьшенный отступ между FAQ и CTA */
+.page>#faq+.section.cta,
+.page>.section#faq+.section.cta {
+  margin-top: 6px !important;
+}
+
+.page>#faq+.section.cta>*:first-child,
+.page>.section#faq+.section.cta>*:first-child {
+  padding-top: 6px !important;
+}
+
+/* Уменьшенный отступ между CTA и контактами */
+.page>#cta+.section.contacts,
+.page>.section#cta+.section.contacts,
+.page>.section.cta+.section.contacts {
+  margin-top: 6px !important;
+}
+
+.page>#cta+.section.contacts>*:first-child,
+.page>.section#cta+.section.contacts>*:first-child,
+.page>.section.cta+.section.contacts>*:first-child {
+  padding-top: 6px !important;
+}
+
 .section h2 {
   font-size: 28px;
   margin: 0 0 20px 0;
@@ -184,8 +268,8 @@
 }
 
 .card {
-  background: #fff;
-  border: 1px solid #eef1f6;
+  background: #f0f0f0;
+  border: 1px solid #e0e0e0;
   border-radius: 14px;
   padding: 18px;
   box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
@@ -268,6 +352,11 @@
   line-height: 1.6;
 }
 
+.frame4-section {
+  border-radius: 14px;
+  overflow: hidden;
+}
+
 .muted.light {
   color: #cbd5f5;
 }
@@ -277,9 +366,9 @@
 }
 
 .course-process {
-  margin-top: 18px;
-  background: linear-gradient(130deg, #eef2ff 0%, #f8fafc 100%);
-  border: 1px solid #d9e2ff;
+  margin-top: 0;
+  background: #f0f0f0;
+  border: 1px solid #e0e0e0;
 }
 
 .course-process h3 {
@@ -291,7 +380,7 @@
 }
 
 .course-process p {
-  margin: 0 0 8px 0;
+  margin: 0;
   color: #475569;
   line-height: 1.4;
 }
@@ -338,12 +427,22 @@
 .price-old {
   color: #94a3b8;
   text-decoration: line-through;
+  font-size: 18px;
 }
 
 .price-now {
   color: #0f172a;
   font-weight: 700;
   font-size: 20px;
+}
+
+.hero-pricing .price-old {
+  font-size: 24px;
+}
+
+.hero-pricing .price-now {
+  font-size: 28px;
+  color: #1e6b5f;
 }
 
 .about-blocks-wrapper {
@@ -444,6 +543,104 @@
   font-style: normal;
 }
 
+/* Карусель отзывов - скрыта на десктопе */
+.testimonials-carousel {
+  display: none;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+.testimonials-carousel-container {
+  display: flex;
+  transition: transform 0.3s ease;
+  width: 100%;
+}
+
+.testimonials-carousel-container .testimonial-slide {
+  min-width: 100%;
+  width: 100%;
+  flex-shrink: 0;
+  display: flex;
+  box-sizing: border-box;
+}
+
+.testimonials-carousel-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.testimonials-carousel-btn {
+  background: #1e6b5f;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  line-height: 1;
+  padding: 0;
+  position: relative;
+}
+
+.testimonials-carousel-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, calc(-50% - 2px));
+  font-size: 16px;
+  line-height: 1;
+  color: #fff;
+}
+
+.testimonials-carousel-btn.prev::before {
+  content: '←';
+}
+
+.testimonials-carousel-btn.next::before {
+  content: '→';
+}
+
+.testimonials-carousel-btn>* {
+  display: none;
+}
+
+.testimonials-carousel-btn:hover {
+  background: #1a5f4a;
+}
+
+.testimonials-carousel-dots {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.testimonials-carousel-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: none;
+  background: #cbd5e1;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s;
+}
+
+.testimonials-carousel-dot.active {
+  background: #1e6b5f;
+  width: 12px;
+  height: 12px;
+}
+
 .pricing .price-card {
   background: #fff;
   border: 1px solid #eef1f6;
@@ -496,6 +693,11 @@
 
 .form-message.error {
   color: #b91c1c;
+}
+
+.purchase-btn {
+  padding: 10px 14px;
+  font-size: inherit;
 }
 
 .purchase-btn.disabled {
@@ -566,8 +768,8 @@
 }
 
 .btn.primary {
-  background: #4f46e5;
-  border-color: #4f46e5;
+  background: #1e6b5f;
+  border-color: #1e6b5f;
   color: #fff;
 }
 
@@ -581,7 +783,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-top: 1px solid #eef1f6;
+  background: #d5d5d5;
+  border-top: 1px solid #c5c5c5;
   color: #475569;
 }
 
@@ -650,6 +853,49 @@
     padding-right: 0;
   }
 
+  .frame5-section {
+    margin-top: 24px !important;
+    min-height: 300px !important;
+    padding-bottom: 20px !important;
+  }
+
+  .frame5-content {
+    padding: 12px 16px !important;
+  }
+
+  .frame5-content h3 {
+    font-size: 0.95em !important;
+    margin-bottom: 10px !important;
+  }
+
+  .frame5-content p {
+    font-size: 0.85em !important;
+  }
+
+  .course-process-wrapper {
+    flex-direction: column !important;
+    padding: 0 24px !important;
+  }
+
+  .frame4-section {
+    margin-top: 0 !important;
+    min-height: 300px !important;
+    padding-bottom: 20px !important;
+  }
+
+  /* На мобильных скрываем сетку отзывов и показываем карусель */
+  .testimonials {
+    display: none !important;
+  }
+
+  .testimonials-carousel {
+    display: block !important;
+  }
+
+  .testimonials-carousel-container {
+    display: flex !important;
+  }
+
   .testimonials .testimonial-card {
     flex-direction: column;
     align-items: center;
@@ -683,4 +929,36 @@
   .legal-links {
     align-items: center;
   }
+
+  #cta .btn.purchase-btn,
+  #cta .btn.primary.purchase-btn,
+  .section.cta .btn.purchase-btn,
+  .section.cta .btn.primary.purchase-btn,
+  a.btn.purchase-btn,
+  a.btn.primary.purchase-btn {
+    position: fixed !important;
+    bottom: 20px !important;
+    left: 50% !important;
+    right: auto !important;
+    top: auto !important;
+    transform: translateX(-50%) !important;
+    z-index: 1000 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    width: calc(100% - 48px) !important;
+    max-width: 400px !important;
+    text-align: center !important;
+    margin: 0 !important;
+    display: block !important;
+  }
+
+  .section.cta {
+    padding-bottom: 100px !important;
+  }
+}
+
+.course-process-wrapper {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 24px;
 }

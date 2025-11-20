@@ -1,13 +1,79 @@
 import { useParams, Link } from 'react-router-dom'
 import '../App.css'
 import { brand, courses } from '../config'
-import { useMemo, useState } from 'react'
-import heroImage from '../assets/firstPage2.jpg'
+import { useMemo, useState, useEffect } from 'react'
+import heroImage from '../assets/firstPage2.webp'
+import frame5Image from '../assets/frame5.jpg'
+import frame4Image from '../assets/frame4.jpg'
+import frame3Image from '../assets/frame3.jpg'
+import frame7Image from '../assets/frame7.jpg'
 
 export default function CoursePage() {
   const { slug } = useParams()
   const course = useMemo(() => courses.find((c) => c.slug === slug), [slug])
   const [menuOpen, setMenuOpen] = useState(false)
+  const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0)
+
+  // Прокрутка к началу страницы при переходе на курс
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [slug])
+
+  // Обновление Open Graph изображения для страницы курса
+  useEffect(() => {
+    if (!course) return
+
+    const updateMetaImage = () => {
+      // Используем getImageUrl для правильной обработки пути
+      const relativePath = getImageUrl(heroImage)
+      const imageUrl = import.meta.env.PROD
+        ? `https://AnnaChikalova.github.io${relativePath}`
+        : `${window.location.origin}${relativePath}`
+
+      let ogImage = document.querySelector('meta[property="og:image"]')
+      if (!ogImage) {
+        ogImage = document.createElement('meta')
+        ogImage.setAttribute('property', 'og:image')
+        document.head.appendChild(ogImage)
+      }
+      ogImage.setAttribute('content', imageUrl)
+    }
+    updateMetaImage()
+  }, [course, slug])
+
+  // Функция для правильной обработки путей к изображениям с base path
+  const getImageUrl = (imageUrl: string | undefined) => {
+    if (!imageUrl) return ''
+    // Если это уже полный URL (http/https), возвращаем как есть
+    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+      return imageUrl
+    }
+    // В dev-режиме возвращаем путь как есть
+    if (import.meta.env.DEV) {
+      return imageUrl
+    }
+    // В production добавляем base path только если его еще нет
+    const basePath = '/dukhovnoye_razvitiye'
+    if (imageUrl.startsWith(basePath)) {
+      return imageUrl
+    }
+    // Если путь начинается с /assets/, добавляем base path
+    if (imageUrl.startsWith('/assets/')) {
+      return `${basePath}${imageUrl}`
+    }
+    // Если путь начинается с /, добавляем base path
+    if (imageUrl.startsWith('/')) {
+      return `${basePath}${imageUrl}`
+    }
+    // Для относительных путей
+    if (imageUrl.includes('/assets/')) {
+      const assetsIndex = imageUrl.indexOf('/assets/')
+      const pathAfterAssets = imageUrl.substring(assetsIndex)
+      return `${basePath}${pathAfterAssets}`
+    }
+    // Для других относительных путей
+    return `${basePath}/${imageUrl}`
+  }
 
   if (!course) {
     return (
@@ -83,7 +149,7 @@ export default function CoursePage() {
       <section
         className="course-hero"
         style={{
-          backgroundImage: `linear-gradient(180deg, rgba(15,23,42,0.38) 0%, rgba(15,23,42,0.6) 100%), url(${heroImage})`,
+          backgroundImage: `linear-gradient(180deg, rgba(15,23,42,0.38) 0%, rgba(15,23,42,0.6) 100%), url(${getImageUrl(heroImage)})`,
         }}
         aria-label={course.title}
       >
@@ -109,9 +175,6 @@ export default function CoursePage() {
           <div className="about-blocks-wrapper">
             {aboutSections.ifList.length > 0 && (
               <div className="about-block-row">
-                {course.aboutImages?.ifImageUrl && (
-                  <div className="about-image-standalone" style={{ backgroundImage: `url(${course.aboutImages.ifImageUrl})` }} aria-label="Если вы"></div>
-                )}
                 <div className="card about-block-content-only">
                   <h3><strong>Если вы</strong></h3>
                   <ul className="list">
@@ -122,9 +185,6 @@ export default function CoursePage() {
             )}
             {aboutSections.wantList.length > 0 && (
               <div className="about-block-row">
-                {course.aboutImages?.wantImageUrl && (
-                  <div className="about-image-standalone" style={{ backgroundImage: `url(${course.aboutImages.wantImageUrl})` }} aria-label="И хотите"></div>
-                )}
                 <div className="card about-block-content-only">
                   <h3><strong>И хотите</strong></h3>
                   <ul className="list">
@@ -136,11 +196,35 @@ export default function CoursePage() {
           </div>
         ) : null}
         {aboutSections.thenBlock && (
-          <div className="card then-block" style={{ marginTop: '18px', textAlign: 'center', padding: '24px' }}>
-            <h3 style={{ margin: 0 }}><strong>{aboutSections.thenBlock}</strong></h3>
+          <div className="about-block-row" style={{ marginTop: '32px' }}>
+            <div className="card about-block-content-only">
+              <h3><strong>{aboutSections.thenBlock}</strong></h3>
+              <p>Он поможет Вам понять, как именно всё происходит, и как на это можно влиять.</p>
+            </div>
           </div>
         )}
-        <div className="card course-process">
+        <section
+          className="course-hero frame5-section"
+          style={{
+            marginTop: '32px',
+            minHeight: '500px',
+            backgroundImage: `url(${getImageUrl(frame5Image)})`,
+            backgroundSize: '100% auto',
+            backgroundPosition: 'center 70%',
+            backgroundRepeat: 'no-repeat',
+            borderRadius: '14px',
+            overflow: 'hidden',
+          }}
+          aria-label="Изображение"
+        />
+        {aboutSections.rest.length > 0 && (
+          <div className="card" style={{ marginTop: '12px' }}>
+            <p>{aboutSections.rest.join(' ')}</p>
+          </div>
+        )}
+      </section>
+      <div className="course-process-wrapper section" style={{ display: 'flex', gap: '24px', alignItems: 'stretch' }}>
+        <div className="card course-process" style={{ flex: '1', display: 'flex', flexDirection: 'column' }}>
           <h3>Как проходит обучение</h3>
           <p>Курс состоит из пяти частей. В течение пяти дней каждое утро вы получаете один видеоурок длительностью 30–50 минут с подробными объяснениями и иллюстрациями по теме.</p>
           <p>Обучение проходит в телеграм-боте, доступ к которому открывается сразу после приобретения курса.</p>
@@ -148,12 +232,49 @@ export default function CoursePage() {
           <p>Доступ ко всем материалам сохраняется в течение 1 года с момента покупки.</p>
           <p>Если по какой-либо причине курс не подойдёт, сообщите нам об этом в течение 14 дней с момента оплаты — мы вернём полную стоимость.</p>
         </div>
-        {aboutSections.rest.length > 0 && (
-          <div className="card" style={{ marginTop: '12px' }}>
-            <p>{aboutSections.rest.join(' ')}</p>
-          </div>
-        )}
-      </section>
+        <section
+          className="course-hero frame4-section"
+          style={{
+            flex: '1',
+            padding: 0,
+            minHeight: '450px',
+            backgroundImage: `linear-gradient(0deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.15) 100%), url(${getImageUrl(frame4Image)})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center center',
+            backgroundRepeat: 'no-repeat',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          aria-label="Изображение"
+        />
+      </div>
+
+      <div className="course-process-wrapper section" style={{ display: 'flex', gap: '24px', alignItems: 'stretch' }}>
+        <div className="card course-process" style={{ flex: '1', display: 'flex', flexDirection: 'column' }}>
+          <h3>"Мир невидимый", что это?</h3>
+          <p>Вам наверняка знакомы такие понятия как: душа, аура, тонкий план и многие другие, которыми часто называют то, что лежит за пределами восприятия физических органов чувств человека (зрения, слуха и прочих....).</p>
+          <p>Эта тема окружена мистикой, таинственностью, а иногда и повышенной секретностью....</p>
+          <p>Хотя на самом деле, все эти явления имеют такие же чёткие физические парамерты и закономерности, как например, то же электричество или радиоволны, но только пока еще не изученные человеком.</p>
+          <p>Поэтому, этот курс был специально создан для того, чтобы в простой понятной форме показать, как же устроена та часть нашего мира, которую мы не воспринимаем нашими физическими органами чувств, но в которой все постоянно находимся и непрерывно взаимодействуем.</p>
+        </div>
+        <section
+          className="course-hero frame4-section"
+          style={{
+            flex: '1',
+            padding: 0,
+            minHeight: '450px',
+            backgroundImage: `linear-gradient(0deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.15) 100%), url(${getImageUrl(frame3Image)})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center center',
+            backgroundRepeat: 'no-repeat',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          aria-label="Изображение"
+        />
+      </div>
 
       <section id="syllabus" className="section">
         <h2>Программа обучения</h2>
@@ -186,6 +307,21 @@ export default function CoursePage() {
         </section>
       )}
 
+      <section
+        className="course-hero"
+        style={{
+          backgroundImage: `linear-gradient(180deg, rgba(15,23,42,0.38) 0%, rgba(15,23,42,0.6) 100%), url(${getImageUrl(frame7Image)})`,
+        }}
+        aria-label="Миссия данного курса"
+      >
+        <div className="course-hero-content">
+          <h3 style={{ margin: '0 0 16px 0', fontSize: '1.4em', color: '#f8fafc' }}><strong>Миссия данного курса:</strong></h3>
+          <p style={{ margin: '0 0 12px 0', fontSize: '1.1em', color: '#f8fafc' }}>Наш мир исторически, и астрономически подошёл к тому моменту, когда происходит переход планеты и человечества в новую информационную эру.</p>
+          <p style={{ margin: '0 0 12px 0', fontSize: '1.1em', color: '#f8fafc' }}>Этот переход будет сопровождаться разного рода планетарными событиями, и в том числе человечеству будут открываться новые уровни мироздания.</p>
+          <p style={{ margin: 0, fontSize: '1.1em', color: '#f8fafc' }}>И задача этого курса, дать человеку ориентиры, и поддержать его на этом эволюционном пути.</p>
+        </div>
+      </section>
+
       <section id="reviews" className="section">
         <h2>Отзывы</h2>
         <div className="grid testimonials">
@@ -201,6 +337,55 @@ export default function CoursePage() {
             </div>
           ))}
         </div>
+        <div className="testimonials-carousel">
+          <div
+            className="testimonials-carousel-container"
+            style={{ transform: `translateX(-${currentTestimonialIndex * 100}%)` }}
+          >
+            {course.testimonials.map((t) => (
+              <div
+                key={t.name}
+                className="testimonial-card testimonial-slide"
+              >
+                {t.imageUrl && (
+                  <img className="testimonial-avatar" src={t.imageUrl} alt={t.name} />
+                )}
+                <div className="testimonial-body">
+                  <p>{t.text}</p>
+                  <cite>— {t.name}</cite>
+                </div>
+              </div>
+            ))}
+          </div>
+          {course.testimonials.length > 1 && (
+            <div className="testimonials-carousel-controls">
+              <button
+                className="testimonials-carousel-btn prev"
+                onClick={() => setCurrentTestimonialIndex((prev) => (prev > 0 ? prev - 1 : course.testimonials.length - 1))}
+                aria-label="Предыдущий отзыв"
+              >
+                ←
+              </button>
+              <div className="testimonials-carousel-dots">
+                {course.testimonials.map((_, index) => (
+                  <button
+                    key={index}
+                    className={`testimonials-carousel-dot ${index === currentTestimonialIndex ? 'active' : ''}`}
+                    onClick={() => setCurrentTestimonialIndex(index)}
+                    aria-label={`Перейти к отзыву ${index + 1}`}
+                  />
+                ))}
+              </div>
+              <button
+                className="testimonials-carousel-btn next"
+                onClick={() => setCurrentTestimonialIndex((prev) => (prev < course.testimonials.length - 1 ? prev + 1 : 0))}
+                aria-label="Следующий отзыв"
+              >
+                →
+              </button>
+            </div>
+          )}
+        </div>
       </section>
 
       <section id="faq" className="section">
@@ -214,8 +399,6 @@ export default function CoursePage() {
       </section>
 
       <section id="cta" className="section cta">
-        <h2>Присоединяйтесь</h2>
-        <p>Нажмите кнопку ниже, чтобы перейти на страницу оплаты и получить доступ к курсу.</p>
         <a
           className={`btn primary purchase-btn${brand.formEndpoint ? '' : ' disabled'}`}
           href={brand.formEndpoint || '#'}
@@ -229,8 +412,6 @@ export default function CoursePage() {
 
       {(brand.contacts?.email || brand.contacts?.phone || brand.contacts?.telegram || brand.contacts?.name || brand.contacts?.inn) && (
         <section id="contacts" className="section contacts">
-          <h2>Контакты</h2>
-          <p>Если остались вопросы — напишите нам любым удобным способом.</p>
           <ul className="contacts-list">
             {brand.contacts?.name && (
               <li>
@@ -272,14 +453,14 @@ export default function CoursePage() {
         <section id="legal" className="section legal">
           <div className="legal-links">
             {brand.legal?.offerUrl && (
-              <a href={brand.legal.offerUrl} target="_blank" rel="noopener noreferrer">
+              <Link to="/public-offer">
                 Договор публичной оферты
-              </a>
+              </Link>
             )}
             {brand.legal?.privacyUrl && (
-              <a href={brand.legal.privacyUrl} target="_blank" rel="noopener noreferrer">
+              <Link to="/privacy-policy">
                 Политика конфиденциальности
-              </a>
+              </Link>
             )}
           </div>
         </section>

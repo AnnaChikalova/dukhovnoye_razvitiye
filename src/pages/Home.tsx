@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import '../App.css'
 import { brand, courses } from '../config'
-import heroImage from '../assets/frame2.png'
+import heroImage from '../assets/frame2.jpg'
+import courseHeroImage from '../assets/firstPage2.webp'
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -10,6 +11,60 @@ export default function Home() {
     { href: '#benefits', label: 'Зачем' },
     { href: '#courses', label: 'Курсы' },
   ]
+
+  // Функция для правильной обработки путей к изображениям с base path
+  const getImageUrl = (imageUrl: string | undefined) => {
+    if (!imageUrl) return ''
+    // Если это уже полный URL (http/https), возвращаем как есть
+    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+      return imageUrl
+    }
+    // В dev-режиме возвращаем путь как есть
+    if (import.meta.env.DEV) {
+      return imageUrl
+    }
+    // В production добавляем base path только если его еще нет
+    const basePath = '/dukhovnoye_razvitiye'
+    if (imageUrl.startsWith(basePath)) {
+      return imageUrl
+    }
+    // Если путь начинается с /assets/, добавляем base path
+    if (imageUrl.startsWith('/assets/')) {
+      return `${basePath}${imageUrl}`
+    }
+    // Если путь начинается с /, добавляем base path
+    if (imageUrl.startsWith('/')) {
+      return `${basePath}${imageUrl}`
+    }
+    // Для относительных путей
+    if (imageUrl.includes('/assets/')) {
+      const assetsIndex = imageUrl.indexOf('/assets/')
+      const pathAfterAssets = imageUrl.substring(assetsIndex)
+      return `${basePath}${pathAfterAssets}`
+    }
+    // Для других относительных путей
+    return `${basePath}/${imageUrl}`
+  }
+
+  // Обновление Open Graph изображения для главной страницы
+  useEffect(() => {
+    const updateMetaImage = () => {
+      // Используем getImageUrl для правильной обработки пути
+      const relativePath = getImageUrl(heroImage)
+      const imageUrl = import.meta.env.PROD
+        ? `https://AnnaChikalova.github.io${relativePath}`
+        : `${window.location.origin}${relativePath}`
+
+      let ogImage = document.querySelector('meta[property="og:image"]')
+      if (!ogImage) {
+        ogImage = document.createElement('meta')
+        ogImage.setAttribute('property', 'og:image')
+        document.head.appendChild(ogImage)
+      }
+      ogImage.setAttribute('content', imageUrl)
+    }
+    updateMetaImage()
+  }, [])
 
   return (
     <div className="page">
@@ -51,7 +106,7 @@ export default function Home() {
         id="hero"
         className="home-hero"
         style={{
-          backgroundImage: `linear-gradient(192deg, rgba(15,23,42,0.35) 0%, rgba(15,23,42,0.62) 100%), url(${heroImage})`,
+          backgroundImage: `linear-gradient(192deg, rgba(15,23,42,0.35) 0%, rgba(15,23,42,0.62) 100%), url(${getImageUrl(heroImage)})`,
         }}
         role="img"
         aria-label="Первый экран"
@@ -61,11 +116,6 @@ export default function Home() {
           <p>Осознанность, энергетические практики и познание тонкого плана в светлой, бережной атмосфере.</p>
           <div className="hero-actions">
             <a href="#courses" className="btn primary">Смотреть курсы</a>
-          </div>
-          <div className="hero-stats">
-            <div><strong>5 000+</strong><span>учеников</span></div>
-            <div><strong>120+</strong><span>уроков</span></div>
-            <div><strong>4.9/5</strong><span>оценка</span></div>
           </div>
         </div>
       </section>
@@ -91,13 +141,13 @@ export default function Home() {
       <section id="courses" className="section">
         <h2>Курсы</h2>
         <div className="grid courses">
-          {courses.map((c) => (
+          {courses.filter((c) => c.slug === 'mindfulness-101').map((c) => (
             <article key={c.slug} className="course">
-              <div className="course-image" style={{ backgroundImage: `url(${c.imageUrl})` }} aria-label={c.title}></div>
+              <div className="course-image" style={{ backgroundImage: `url(${getImageUrl(courseHeroImage)})` }} aria-label={c.title}></div>
               <div className="course-body">
                 <h3>{c.title}</h3>
                 <p>{c.description}</p>
-                <Link to={`/courses/${c.slug}`} className="btn small">Открыть курс</Link>
+                <Link to={`/courses/${c.slug}`} className="btn primary small">Открыть курс</Link>
               </div>
             </article>
           ))}
@@ -106,9 +156,13 @@ export default function Home() {
 
       <section id="cta" className="section cta">
         <h2>Готовы начать?</h2>
-        <p>Оставьте e‑mail, и мы пришлём стартовые материалы и расписание.</p>
         {/* Home uses the global CTA in footer on Course pages; keep simple here */}
         <a href="#courses" className="btn primary">Смотреть курсы</a>
+        {/* Временные ссылки для тестирования страниц */}
+        <div style={{ marginTop: '20px', display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <Link to="/thank-you" className="btn" style={{ fontSize: '14px' }}>Тест: Страница благодарности</Link>
+          <Link to="/payment-failed" className="btn" style={{ fontSize: '14px' }}>Тест: Неуспешная оплата</Link>
+        </div>
       </section>
 
       <footer className="footer">
