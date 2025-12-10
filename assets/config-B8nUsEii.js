@@ -6,7 +6,9 @@ const t="/dukhovnoye_razvitiye/assets/max-B492lKJz.webp",a={name:"Новый м�
 понять, как происходят события и "случайности";
 научиться влиять на ход событий в своей жизни;
 обрести уверенность в своих поступках и действиях и стать по настоящему счастливым человеком;
-Тогда этот курс для Вас!`,aboutImages:{ifImageUrl:"https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=800&auto=format&fit=crop",wantImageUrl:"https://images.unsplash.com/photo-1511632765486-a01980e01a18?q=80&w=800&auto=format&fit=crop"},pricing:{currency:"грн",current:480,original:2e3},author:{name:"Приветствую Вас друзья! Меня зовут Максим Чикалов.",bio:`Около 25 лет назад я заметил, что в жизни людей «случайности» происходят не просто так — за ними стоит определённая закономерность.
+Тогда этот курс для Вас!`,aboutImages:{ifImageUrl:"https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=800&auto=format&fit=crop",wantImageUrl:"https://images.unsplash.com/photo-1511632765486-a01980e01a18?q=80&w=800&auto=format&fit=crop"},pricing:{currency:"грн",current:480,original:2e3},author:{name:"Приветствую Вас друзья!",bio:`Меня зовут Максим Чикалов.
+
+Около 25 лет назад я заметил, что в жизни людей «случайности» происходят не просто так — за ними стоит определённая закономерность.
 
 Это наблюдение стало началом глубокого пути познания «невидимого мира».
 
